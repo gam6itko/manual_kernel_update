@@ -12,6 +12,20 @@ MACHINES = {
       :net => [],
       # forwarded ports
       :forwarded_port => []
+  },
+  :"kernel-update-src" => {
+      :box_name => "centos/7",
+      :cpus => 4,
+      :memory => 4096,
+      :net => [],
+      :forwarded_port => []
+  },
+  :"kernel-update-src-test" => {
+      :box_name => "centos-7-5.19-src",
+      :cpus => 1,
+      :memory => 1024,
+      :net => [],
+      :forwarded_port => []
   }
 }
 
