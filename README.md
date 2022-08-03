@@ -409,3 +409,62 @@ vagrant cloud publish --release gam6itko/centos-7-5.19-src 1.0 virtualbox ./cent
 
 
 # Задание с двумя звездами (**)
+
+Создаём vagrantfile
+```
+Vagrant.configure("2") do |config|
+  config.vm.box = "centos-7-5.19-src"
+  config.vm.synced_folder "./vagrant_data", "/vagrant_data"
+end
+```
+
+Создадим новую папку и пару файлов.
+```shell
+mkdir shared_folder_ok
+cd ./shared_folder_ok
+mkdir ./vagrant_data
+echo hello > ./vagrant_data/do_you_see_me.txt
+# добавим Vagrantfile с образом сделаным ранее
+vagrant up
+```
+
+После запуска `vagrant up` получил следующую ошибку.
+```
+Vagrant was unable to mount VirtualBox shared folders. This is usually
+because the filesystem "vboxsf" is not available. This filesystem is
+made available via the VirtualBox Guest Additions and kernel module.
+Please verify that these guest additions are properly installed in the
+guest. This is not a bug in Vagrant and is usually caused by a faulty
+Vagrant box. For context, the command attempted was:
+
+mount -t vboxsf -o uid=1000,gid=1000,_netdev vagrant_data /vagrant_data
+
+The error output from the command was:
+
+mount: unknown filesystem type 'vboxsf'
+```
+
+Немного изменим настройки sync_folder
+```
+Vagrant.configure("2") do |config|
+  config.vm.box = "centos-7-5.19-src"
+  config.vm.synced_folder "./vagrant_data", "/vagrant_data", type: 'nfs'
+end
+```
+
+Запускаем еще раз
+
+```shell
+vagrant reload
+# оно не упало
+vagrant ssh
+# ...
+cat /vagrant_data/do_you_see_me.txt
+# hello
+```
+
+Как мы видим, synced_folder заработало. Правда, есть другие типы синхронизации быстрее чем rsync, но это уже совсем другая история
+
+
+
+
